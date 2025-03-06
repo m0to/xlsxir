@@ -226,7 +226,7 @@ defmodule Xlsxir.XlsxFile do
   defp clean_stream({sax_parser_pid, xlsx_file}) do
     # Kill parser loop process and remove common ETS tables
     try do
-      if Process.alive?(sax_parser_pid) do
+      if is_pid(sax_parser_pid) and Process.alive?(sax_parser_pid) do
         Process.exit(sax_parser_pid, :kill)
       end
     catch
