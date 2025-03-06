@@ -162,8 +162,10 @@ defmodule Xlsxir.Unzip do
   defp extract_from_zip(path, file_list, :memory),
     do: :zip.extract(path, [{:file_list, file_list}, :memory])
 
-  defp extract_from_zip(path, file_list, {:file, dest_path}),
-    do: :zip.extract(path, [{:file_list, file_list}, {:cwd, dest_path}])
+  defp extract_from_zip(path, file_list, {:file, dest_path}) do
+    dest_charlist = String.to_charlist(dest_path)
+    :zip.extract(path, [{:file_list, file_list}, {:cwd, dest_charlist}])
+  end
 
   defp build_xml_files(files_list) do
     files_list
@@ -176,7 +178,8 @@ defmodule Xlsxir.Unzip do
   end
 
   # When extracting to temp file
-  defp build_xml_file(file_path) do
-    %XmlFile{name: Path.basename(file_path), path: to_string(file_path)}
+  defp build_xml_file(file_path) when is_list(file_path) do
+    path_string = to_string(file_path)
+    %XmlFile{name: Path.basename(path_string), path: path_string}
   end
 end
